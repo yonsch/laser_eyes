@@ -11,8 +11,8 @@ c, img, sprite = None, None, None
 x, y = 0, 0
 def poo():
     global c, img, sprite, x, y
-    #fn = askopenfilename()
-    fn = '/Users/michael/Desktop/bear.jpg'
+    fn = askopenfilename()
+    #fn = '/Users/michael/Desktop/bear.jpg'
     if fn == '': return
     img = Image.open(fn)
     w, h = img.size
