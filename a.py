@@ -10,7 +10,7 @@ POINTX = 595
 POINTY = 405
 
 def main():
-    im = Im.open('a.jpeg')
+    im = Im.open('pig.jpg')
     lens_flare(im)
     im.show()
     im.save('a2.jpeg')
@@ -27,7 +27,7 @@ def lens_flare(im, px = POINTX, py = POINTY, angle = ANGLE, dec_param = DEC_PARA
     imageH = im.size[1]
     
     theta = angle * math.pi / 180
-    c, s = np.cos(theta), np.sin(theta)
+    c, s = math.cos(theta), math.sin(theta)
     
     for x in range(imageW):
         for y in range(imageH):
@@ -49,7 +49,7 @@ def lens_flare(im, px = POINTX, py = POINTY, angle = ANGLE, dec_param = DEC_PARA
             g = adv_ave(255, g, gb_val)
             b = adv_ave(255, b, gb_val)
             
-            im.im.putpixel((x,y), (r,g,b))
+            im.im.putpixel((int(x),int(y)), (int(r),int(g),int(b)))
     return im
           
             
