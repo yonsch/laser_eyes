@@ -26,7 +26,7 @@ def lens_flare(im, px = POINTX, py = POINTY, angle = ANGLE, dec_param = DEC_PARA
     imageW = im.size[0]
     imageH = im.size[1]
     
-    theta = angle * math.pi / 180
+    theta = angle
     c, s = math.cos(theta), math.sin(theta)
     
     for x in range(imageW):
@@ -49,7 +49,7 @@ def lens_flare(im, px = POINTX, py = POINTY, angle = ANGLE, dec_param = DEC_PARA
             g = adv_ave(255, g, gb_val)
             b = adv_ave(255, b, gb_val)
             
-            im.im.putpixel((int(x),int(y)), (int(r),int(g),int(b)))
+            im.im.putpixel((x, y), (r, g, b))
     return im
           
             
@@ -59,7 +59,7 @@ def printt(*args): #used to control the printing
     
 def adv_ave(val1, val2, val1_frac):
     #Weighted arithmetic mean of val1 ad val2, the weight of val1 is val1_frac and the weight of val2 is (1 - val1_frac)
-    return math.ceil(val1_frac*val1 + (1-val1_frac)*val2)
+    return int(math.ceil(val1_frac*val1 + (1-val1_frac)*val2))
 
 def dec_func(valx, valy, gb_fac, y_fac, dec_param):
     '''The function the used to set the amount of changing in the color, the func is based on bivariate normal distribution
