@@ -14,7 +14,8 @@ class Cursor(object):
 
         self.x, self.y = x, y
         self.r, self.hr = 15, 4
-        self.hx, self.hy = x - self.r + self.hr / 2, y - self.r + self.hr / 2
+        rd = self.r / math.sqrt(2)
+        self.hx, self.hy = x - rd, y - rd
         index = len(Cursor.instances)
         self.id, self.hid, self.rid = 'ring%i' % index, 'handle%i' % index, "resize%i" % index
         Cursor.instances.append(self)
@@ -26,7 +27,7 @@ class Cursor(object):
                                             width=3, outline='#000000')
         self.handle = self.canvas.create_oval(self.hx-self.hr, self.hy-self.hr, self.hx+self.hr, self.hy+self.hr,
                                               fill='#FFFFFF', tags=self.hid)
-        self.resizer = self.canvas.create_oval(self.x+self.r+2, self.y+self.r+2, self.x+self.r-2, self.y+self.r-2,
+        self.corner = self.canvas.create_oval(self.x + self.r + 2, self.y + self.r + 2, self.x + self.r - 2, self.y + self.r - 2,
                                               fill='#FFFFFF', tags=self.rid)
 
         self.canvas.tag_bind(self.id, '<Button-1>', self.select)
@@ -41,7 +42,14 @@ class Cursor(object):
         self.select()
 
     def resize(self, e):
-
+        hrx, hry = (self.hx - self.x) / self.r, (self.hy - self.y) / self.r  # handle direction
+        d = (e.x + e.y - self.x - self.y) / 2 - self.r
+        d = max(10, min(self.r + d, 100)) - self.r
+        self.r += d
+        self.canvas.coords(self.corner, self.x+self.r+2, self.y+self.r+2, self.x+self.r-2, self.y+self.r-2)
+        self.canvas.coords(self.ring, self.x-self.r, self.y-self.r, self.x+self.r, self.y+self.r)
+        self.canvas.move(self.handle, hrx * d, hry * d)
+        self.hx, self.hy = hrx * self.r + self.x, hry * self.r + self.y
 
     def select(self, _=None):
         for c in Cursor.instances:
@@ -62,6 +70,7 @@ class Cursor(object):
         self.canvas.move(self.center, dx, dy)
         self.canvas.move(self.ring, dx, dy)
         self.canvas.move(self.handle, dx, dy)
+        self.canvas.move(self.corner, dx, dy)
         self.x, self.y = e.x, e.y
         self.hx, self.hy = self.hx + dx, self.hy + dy
 
@@ -72,6 +81,7 @@ class Cursor(object):
         self.canvas.delete(self.ring)
         self.canvas.delete(self.center)
         self.canvas.delete(self.handle)
+        self.canvas.delete(self.corner)
         Cursor.instances.remove(self)
         if Cursor.selected is self:
             Cursor.selected = None
